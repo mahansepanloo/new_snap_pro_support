@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Q_and_A(models.Model):
     supprter = models.ForeignKey(User, on_delete=models.CASCADE)
     user = models.CharField(max_length=100)
@@ -9,7 +10,5 @@ class Q_and_A(models.Model):
     status = models.BooleanField(default=False)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(Null = True , blank=True)
-
-
 
 

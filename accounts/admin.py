@@ -11,3 +11,6 @@ class ModelNameAdmin(admin.ModelAdmin):
 @admin.register(Suporter)
 class SuporterAdmin(admin.ModelAdmin):
     pass
+@admin.register(Subscription)
+class SuporterAdmin(admin.ModelAdmin):
+    pass

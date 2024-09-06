@@ -7,3 +7,7 @@ class ModelNameAdmin(admin.ModelAdmin):
 @admin.register(ProRestaurant)
 class ModelNameAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(Suporter)
+class SuporterAdmin(admin.ModelAdmin):
+    pass

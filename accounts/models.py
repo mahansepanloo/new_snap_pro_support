@@ -18,3 +18,8 @@ class ProRestaurant(models.Model):
 
     def __str__(self):
         return f"Pro Restaurant: {self.name}"
+
+
+class Suporter(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    is_suportet = models.BooleanField(default=False)

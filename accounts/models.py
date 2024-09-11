@@ -5,7 +5,7 @@ from pro_service.models import Subscription, SubscriptionRestaurant
 
 class ProUser(models.Model):
     is_pro = models.BooleanField(default=False)
-    user_name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=11, null=True, blank=True)
     start = models.DateTimeField(auto_now_add=True)
     end = models.DateTimeField(null=True, blank=True)
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, blank=True, null=True)

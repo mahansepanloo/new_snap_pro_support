@@ -65,7 +65,7 @@ class CreateProUser(CreateAPIView):
                     end_date = start_date + timedelta(days=data['subscription_type'] * 30)
 
                     pro_user_data = {
-                        "user_name": data['user_name'],
+                        "phone_number": data['phone_number'],
                         "subscription": subscription.id,
                         "is_pro": True,
                         "end": end_date

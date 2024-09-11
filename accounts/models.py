@@ -1,14 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-
-class Subscription(models.Model):
-    tital = models.CharField(max_length=500)
-    price = models.BigIntegerField()
-    interval = models.IntegerField()
-
-    def __str__(self):
-        return self.tital
+from pro_service.models import Subscription
 
 
 class ProUser(models.Model):
@@ -16,6 +8,9 @@ class ProUser(models.Model):
     user_name = models.CharField(max_length=100)
     start = models.DateTimeField(auto_now_add=True)
     end = models.DateTimeField(null=True, blank=True)
+    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, blank=True, null=True)
+
+    
 
     def __str__(self):
         return f"Pro User: ({self.user_name})"

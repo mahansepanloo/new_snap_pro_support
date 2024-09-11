@@ -65,8 +65,7 @@ class SubscriptionRquest(APIView):
             return Response({'error': f'Missing field: {str(e)}'}, status=400)
         except Exception as e:
             return Response({'error': str(e)}, status=400)
-# ورودی: {"phone_number": "09123456789", "subscription_type": 1}
-#خروجی: {"title": "Monthly Subscription", "price": 100000, "subscription_type": 1, "phone_number": "09123456789"}
+
 
 class CreateProUser(CreateAPIView):
     serializer_class = SubscriptionSerializer

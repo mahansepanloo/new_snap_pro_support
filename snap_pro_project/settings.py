@@ -114,3 +114,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CELERY_BROKER_URL = 'amqp://localhost'
+
+CELERY_BEAT_SCHEDULE = {
+    'check-pro-users-every-6-hours': {
+        'task': 'pro_service.tasks.check_all_pro_user_status',
+        'schedule': 21600,  # 6 hours in seconds
+    },
+}
+
+

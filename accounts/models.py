@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from pro_service.models import Subscription
+from pro_service.models import Subscription, SubscriptionRestaurant
 
 
 class ProUser(models.Model):
@@ -20,6 +20,7 @@ class ProRestaurant(models.Model):
     is_pro = models.BooleanField(default=False)
     start = models.DateTimeField(auto_now_add=True)
     end = models.DateTimeField(null=True, blank=True)
+    subscription = models.ForeignKey(SubscriptionRestaurant, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"Pro Restaurant: {self.name}"

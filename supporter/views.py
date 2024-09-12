@@ -1,27 +1,33 @@
-from supporter.models import *
-from django.http import Http404
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
+
+from rest_framework import generics
 from .serializers import *
+from .permissions import Is_supporterPermisions
 
-class Q_and_A_list(ListAPIView):
-    queryset = Q_and_A.objects.all()
-    serializer_class = Q_and_A_serializer
 
-class Q_and_A_(CreateAPIView):
-    queryset = Q_and_A.objects.all()
-    serializer_class = Q_and_A_serializer
+class CreateQ(generics.ListCreateAPIView):
+   queryset = Question.objects.all()
+   serializer_class = QSerilazers
 
-class Q_and_A_update(UpdateAPIView):
-    queryset = Q_and_A.objects.all()
-    serializer_class = Q_and_A_serializer
+class CreateAnser(generics.ListCreateAPIView):
+   queryset = Answer.objects.all()
+   serializer_class = ASerilazers
+   permission_classes = [Is_supporterPermisions]
 
-class Q_and_A_delete(DestroyAPIView):
-    queryset = Q_and_A.objects.all()
-    serializer_class = Q_and_A_serializer
+   def perform_create(self, serializer):
 
-class Q_and_A_detail(RetrieveAPIView):
-    queryset = Q_and_A.objects.all()
-    serializer_class = Q_and_A_serializer
+
+
+      question_id = self.request.data["id_q"]
+      question = Question.objects.get(id=int(question_id))
+      answer_instance = Answer.objects.create(question=question,supporter=self.request.user,answer=serializer.validated_data.get("answer"))
+      question.status = True
+      question.save()
+
+      return answer_instance
+
+
+
+
+
+
+

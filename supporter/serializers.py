@@ -1,9 +1,19 @@
-from rest_framework.serializers import ModelSerializer
-from .models import Q_and_A
+from rest_framework import serializers
+from .models import *
 
 
-class Q_and_A_serializer(ModelSerializer):
+class QSerilazers(serializers.ModelSerializer):
+    answers = serializers.SerializerMethodField()
     class Meta:
-        model = Q_and_A
-        fields = '__all__'
+        model = Question
+        fields = "__all__"
 
+    def get_answers(self,obj):
+        r = obj.answers.all()
+        return ASerilazers(instance=r,many=True).data
+
+
+class ASerilazers(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ["answer"]

@@ -25,7 +25,8 @@ class CreateAnser(generics.ListCreateAPIView):
    def perform_create(self, serializer):
       question_id = self.request.data["id_q"]
       question = Question.objects.get(id=int(question_id))
-      answer_instance = Answer.objects.create(question=question,supporter=self.request.user,answer=serializer.validated_data.get("answer"))
+      answer_instance = Answer.objects.create(question=question,supporter=self.request.user,
+                                              answer=serializer.validated_data.get("answer"))
       question.status = True
       question.save()
 

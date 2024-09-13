@@ -15,7 +15,6 @@ class Answer(models.Model):
     supporter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answers')
     answer = models.TextField()
     start_date = models.DateTimeField(auto_now_add=True)
-    rate = models.IntegerField()
 
     def __str__(self):
         return self.answer[:50]

@@ -89,6 +89,18 @@ class UpdateProUser(APIView):
                 current_user.is_pro = True
                 current_user.start = timezone.now()
                 current_user.end = current_user.start + timedelta(days=subscription_type * 30)
+
+
+                if subscription_type == 1:
+                    sub_id = 1
+                elif subscription_type == 3:
+                    sub_id = 2
+                elif subscription_type == 6:
+                    sub_id = 3
+                else:
+                    return Response({'error': 'Invalid subscription type'}, status=status.HTTP_400_BAD_REQUEST)
+                Subscription_cur = Subscription.objects.get(id=sub_id)
+                current_user.subscription = Subscription_cur
                 current_user.save()
 
                 pro_user_data = {
@@ -96,6 +108,7 @@ class UpdateProUser(APIView):
                     "is_pro": True,
                     "end": current_user.end,
                     "start": current_user.start,
+
                 }
 
                 # response = requests.post("YOUR_URL_HERE", json=pro_user_data)

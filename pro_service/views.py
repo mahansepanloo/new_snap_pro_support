@@ -197,7 +197,7 @@ class UpdateProRestaurant(APIView):
                         sub_id = 3
                     else:
                         return Response({'error': 'Invalid subscription type'}, status=status.HTTP_400_BAD_REQUEST)
-                    Subscription_cur = Subscription.objects.get(id=sub_id)
+                    Subscription_cur = SubscriptionRestaurant.objects.get(id=sub_id)
                     current_restaurant.subscription = Subscription_cur
                     current_restaurant.save()
 

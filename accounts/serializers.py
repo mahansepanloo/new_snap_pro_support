@@ -4,7 +4,7 @@ from .models import ProUser, ProRestaurant
 class ProUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProUser
-        fields = '__all__'
+        fields = ['is_pro', 'start', 'end', 'subscription_type']
 
 class ProRestaurantSerializer(serializers.ModelSerializer):
     class Meta:

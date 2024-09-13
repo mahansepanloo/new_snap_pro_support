@@ -154,7 +154,7 @@ class SubscriptionRequestRestaurant(APIView):
             }
 #             request.post("******", json =  request_dict)
 
-#             return JsonResponse(request_dict, status=status.HTTP_201_CREATED)
+            return JsonResponse(request_dict, status=status.HTTP_201_CREATED)
 
         except KeyError as e:
             return Response({'error': f'Missing field: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)

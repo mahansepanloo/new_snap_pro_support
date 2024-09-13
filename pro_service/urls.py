@@ -8,8 +8,8 @@ urlpatterns = [
     path('subscriptions/request/', SubscriptionRequest.as_view()),
     path('update-pro-user/', UpdateProUser.as_view()),
     path('update-pro-restaurant/', UpdateProRestaurant.as_view()),
-    path('SubscriptionRequestRestaurant', SubscriptionRequestRestaurant.as_view()),
-    path('SubscriptionListViewRestu', SubscriptionListViewRestu.as_view()),
+    path('SubscriptionRequestRestaurant/', SubscriptionRequestRestaurant.as_view()),
+    path('SubscriptionListViewRestu/', SubscriptionListViewRestu.as_view()),
 
 
 ]

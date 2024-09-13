@@ -3,10 +3,13 @@ from .models import *
 
 
 class QSerilazers(serializers.ModelSerializer):
-    answers = serializers.SerializerMethodField()
     class Meta:
         model = Question
         fields = "__all__"
+        extra_kwargs = {
+            'status': {'read_only': True},
+
+        }
 
     def get_answers(self,obj):
         r = obj.answers.all()

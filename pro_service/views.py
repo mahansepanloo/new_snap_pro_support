@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from rest_framework import status
 import requests    
 from django.utils import timezone
+from snap_pro_project.settings import env
 
 class SubscriptionListView(APIView):
     def get(self, request):
@@ -62,12 +63,10 @@ class SubscriptionRequest(APIView):
                 "phone_number": phone_number
             }
 
-            # Replace '******' with the actual endpoint URL
-            # response = requests.post("https://example.com/api/endpoint", json=request_dict)
+            response = requests.post("https://45.139.10.8:8004/getfactor",headers= env('key')
+                                     ,data=request_dict)
 
-            # if response.status_code != 200:
-            #     return Response({'error': 'Failed to process external request'}, status=status.HTTP_400_BAD_REQUEST)
-
+          
             return JsonResponse(request_dict, status=status.HTTP_201_CREATED)
 
         except KeyError as e:
@@ -82,50 +81,51 @@ class UpdateProUser(APIView):
     query_set = ProUser.objects.all()
     def post(self, request, *args, **kwargs):
         data = request.data
-        if data.get('is_paid'):
-            try:
-                current_user = ProUser.objects.get(phone_number=data['phone_number'])
-                subscription_type = current_user.subscription_type
-                current_user.is_pro = True
-                current_user.start = timezone.now()
-                current_user.end = current_user.start + timedelta(days=subscription_type * 30)
+        if request.headers.get('api_keys') ==  env('key'):
+            if data.get('is_paid')==True:
+                try:
+                    current_user = ProUser.objects.get(phone_number=data['name'])
+                    subscription_type = current_user.subscription_type
+                    current_user.is_pro = True
+                    current_user.start = timezone.now()
+                    current_user.end = current_user.start + timedelta(days=subscription_type * 30)
 
 
-                if subscription_type == 1:
-                    sub_id = 1
-                elif subscription_type == 3:
-                    sub_id = 2
-                elif subscription_type == 6:
-                    sub_id = 3
-                else:
-                    return Response({'error': 'Invalid subscription type'}, status=status.HTTP_400_BAD_REQUEST)
-                Subscription_cur = Subscription.objects.get(id=sub_id)
-                current_user.subscription = Subscription_cur
-                current_user.save()
+                    if subscription_type == 1:
+                        sub_id = 1
+                    elif subscription_type == 3:
+                        sub_id = 2
+                    elif subscription_type == 6:
+                        sub_id = 3
+                    else:
+                        return Response({'error': 'Invalid subscription type'}, status=status.HTTP_400_BAD_REQUEST)
+                    Subscription_cur = Subscription.objects.get(id=sub_id)
+                    current_user.subscription = Subscription_cur
+                    current_user.save()
 
-                pro_user_data = {
-                    "phone_number": data['phone_number'],
-                    "is_pro": True,
-                    "end": current_user.end,
-                    "start": current_user.start,
+                    pro_user_data = {
+                        "phone_number": data['name'],
+                        "is_pro": True,
+                        "end": current_user.end,
+                        "start": current_user.start,
 
-                }
+                    }
 
-                # response = requests.post("YOUR_URL_HERE", json=pro_user_data)
+                    # response = requests.post("YOUR_URL_HERE", data=pro_user_data)
 
-                return Response({'message': 'User upgraded to Pro successfully'}, status=status.HTTP_200_OK)
+                    return Response({'message': 'User upgraded to Pro successfully'}, status=status.HTTP_200_OK)
 
-            except ProUser.DoesNotExist:
-                return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+                except ProUser.DoesNotExist:
+                    return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-            except KeyError as e:
-                return Response({'error': f'Missing field: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+                except KeyError as e:
+                    return Response({'error': f'Missing field: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
-            except Exception as e:
-                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+                except Exception as e:
+                    return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        else:
-            return Response({'error': 'Payment required'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Payment required'}, status=status.HTTP_400_BAD_REQUEST)
         
 class SubscriptionListViewRestu(APIView):
     def get(self, request):
@@ -165,8 +165,8 @@ class SubscriptionRequestRestaurant(APIView):
                 "price": price,
                 "restaurant": restaurant_name 
             }
-#             request.post("******", json =  request_dict)
-
+            response = requests.post("https://45.139.10.8:8004/getfactor",headers= env('key')
+                                     ,data=request_dict)
             return JsonResponse(request_dict, status=status.HTTP_201_CREATED)
 
         except KeyError as e:
@@ -181,38 +181,47 @@ class UpdateProRestaurant(APIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        if data.get('is_paid'):
-            try:
-                current_restaurant = ProRestaurant.objects.get(restaurant_name=data['restaurant_name'])
-                current_restaurant.is_pro = True
-                current_restaurant.start = datetime.now()
-                subscription_type = current_restaurant.subscription_type
-                current_restaurant.end = datetime.now() + timedelta(days=subscription_type * 30)
-                current_restaurant.save()
+        if request.headers.get('api_keys') == env('key'):
+            if data.get('is_paid')==True:         
+                try:
+                    current_restaurant = ProRestaurant.objects.get(restaurant_name=data['name'])
+                    current_restaurant.is_pro = True
+                    current_restaurant.start = datetime.now()
+                    subscription_type = current_restaurant.subscription_type
+                    current_restaurant.end = datetime.now() + timedelta(days=subscription_type * 30)
+                    if subscription_type == 3:
+                        sub_id = 1
+                    elif subscription_type == 6:
+                        sub_id = 2
+                    elif subscription_type == 12:
+                        sub_id = 3
+                    else:
+                        return Response({'error': 'Invalid subscription type'}, status=status.HTTP_400_BAD_REQUEST)
+                    Subscription_cur = Subscription.objects.get(id=sub_id)
+                    current_restaurant.subscription = Subscription_cur
+                    current_restaurant.save()
 
-                pro_restaurant_data = {
-                    "restaurant_name": current_restaurant.restaurant_name,
-                    "start": current_restaurant.start,
-                    "end": current_restaurant.end
-                }
+                    pro_restaurant_data = {
+                        "restaurant_name": current_restaurant.restaurant_name,
+                        "start": current_restaurant.start,
+                        "end": current_restaurant.end
+                    }
 
-                # Ensure you have an appropriate URL
-                # response = requests.post("YOUR_URL_HERE", json=pro_restaurant_data)
-                # response.raise_for_status()
+                    # response = requests.post("YOUR_URL_HERE", data=pro_restaurant_data)
 
-                return Response({'message': 'Restaurant upgraded to Pro successfully'}, status=status.HTTP_200_OK)
+                    return Response({'message': 'Restaurant upgraded to Pro successfully'}, status=status.HTTP_200_OK)
+                
+                except ProRestaurant.DoesNotExist:
+                    return Response({'error': 'Restaurant not found'}, status=status.HTTP_404_NOT_FOUND)
+                
+                except KeyError as e:
+                    return Response({'error': f'Missing field: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+                
+                except requests.exceptions.RequestException as e:
+                    return Response({'error': f'Error in external request: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+                
+                except Exception as e:
+                    return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
             
-            except ProRestaurant.DoesNotExist:
-                return Response({'error': 'Restaurant not found'}, status=status.HTTP_404_NOT_FOUND)
-            
-            except KeyError as e:
-                return Response({'error': f'Missing field: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            except requests.exceptions.RequestException as e:
-                return Response({'error': f'Error in external request: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            except Exception as e:
-                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
-        else:
-            return Response({'error': 'Payment required'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Payment required'}, status=status.HTTP_400_BAD_REQUEST)

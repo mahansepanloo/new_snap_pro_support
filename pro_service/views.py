@@ -13,6 +13,12 @@ from django.utils import timezone
 from snap_pro_project.settings import env
 
 class SubscriptionListView(APIView):
+    """
+       API View to list available subscriptions for users.
+
+       Responses:
+           - 200: A list of available subscription plans is returned with their titles, prices, and types.
+       """
     def get(self, request):
         subscriptions = [
             {"title": "Monthly Subscription", "price": 100000, "subscription_type": 1},
@@ -22,6 +28,7 @@ class SubscriptionListView(APIView):
         return Response(subscriptions)
 
 class SubscriptionListView(APIView):
+
     def get(self, request):
         subscriptions = [
             {"title": "Monthly Subscription", "price": 100000, "subscription_type": 1},
@@ -31,6 +38,21 @@ class SubscriptionListView(APIView):
         return Response(subscriptions)
 
 class SubscriptionRequest(APIView):
+    """
+         API View to handle subscription requests from users.
+
+         Request Body:
+             {
+                 "phone_number": "string",  # Required
+                 "subscription_type": 1|3|6  # Required, corresponds to monthly, quarterly, or semi-annual
+             }
+
+         Responses:
+             - 201: Created, returns subscription details.
+             - 400: Bad Request, returns error message for validation failures.
+             - 502: Bad Gateway, external request to payment service failed.
+             - 500: Internal Server Error, catch-all for unexpected issues.
+         """
     def post(self, request, *args, **kwargs):
         try:
             data = request.data
@@ -77,6 +99,20 @@ class SubscriptionRequest(APIView):
             return Response({'error': 'Internal server error', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UpdateProUser(APIView):
+    """
+       API View to update a user's subscription status to Pro.
+
+       Request Body:
+           {
+               "name": "string",           # Required, phone number of the user
+               "is_paid": true|false       # Required, indicates payment status
+           }
+
+       Responses:
+           - 200: User upgraded to Pro successfully.
+           - 404: User not found.
+           - 400: Bad Request, for missing fields or invalid subscription types.
+       """
     serializer_class = ProUserSerializer
     query_set = ProUser.objects.all()
     def post(self, request, *args, **kwargs):
@@ -137,6 +173,19 @@ class SubscriptionListViewRestu(APIView):
         return Response(subscriptions)
 
 class SubscriptionRequestRestaurant(APIView):
+    """
+       API View to handle subscription requests from restaurants.
+
+       Request Body:
+           {
+               "restaurant_name": "string",       # Required
+               "subscription_type": 3|6|12        # Required
+           }
+
+       Responses:
+           - 201: Successfully created, returns subscription details.
+           - 400: Bad Request, returns error message for validation failures.
+       """
     def post(self, request, *args, **kwargs):
         try:
             data = request.data
@@ -176,6 +225,20 @@ class SubscriptionRequestRestaurant(APIView):
 
 
 class UpdateProRestaurant(APIView):
+    """
+        API View to update a restaurant's subscription status to Pro.
+
+        Request Body:
+            {
+                "name": "string",           # Required, restaurant name
+                "is_paid": true|false       # Required, indicates if payment was made
+            }
+
+        Responses:
+            - 200: Restaurant upgraded to Pro successfully.
+            - 404: Restaurant not found.
+            - 400: Bad Request, for validation errors or missing fields.
+        """
     serializer_class = ProRestaurantSerializer
     queryset = ProRestaurant.objects.all()
 
